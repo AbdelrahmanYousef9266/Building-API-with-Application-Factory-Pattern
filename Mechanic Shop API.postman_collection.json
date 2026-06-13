@@ -260,8 +260,8 @@
         "method": "DELETE",
         "header": [],
         "url": {
-          "raw": "DELETE http://127.0.0.1:5000/customers/1",
-          "protocol": "DELETE http",
+          "raw": "http://127.0.0.1:5000/customers/1",
+          "protocol": "http",
           "host": [
             "127",
             "0",
