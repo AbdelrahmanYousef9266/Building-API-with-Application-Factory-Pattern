@@ -3,3 +3,6 @@ flask-sqlalchemy
 flask-marshmallow
 marshmallow-sqlalchemy
 mysql-connector-python
+flask-limiter
+flask-caching
+python-jose

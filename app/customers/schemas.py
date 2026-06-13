@@ -1,16 +1,22 @@
 from app import ma
 from app.models import Customer
-from marshmallow_sqlalchemy import auto_field
+import marshmallow as m
 
 
 class CustomerSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Customer
-        load_instance = True  # Deserialize directly into a Customer object
+        load_instance = True
+
+    # load_only=True means password is accepted on input but NEVER returned in responses
+    password = m.fields.String(load_only=True, required=True)
 
 
-# Single customer (used for GET by id, POST, PUT)
+class LoginSchema(m.Schema):
+    email = m.fields.Email(required=True)
+    password = m.fields.String(required=True)
+
+
 customer_schema = CustomerSchema()
-
-# List of customers (used for GET all)
 customers_schema = CustomerSchema(many=True)
+login_schema = LoginSchema()

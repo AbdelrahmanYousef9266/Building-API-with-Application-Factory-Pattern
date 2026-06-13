@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
-from app import db
-from app.models import Mechanic
+from sqlalchemy import func
+from app import db, cache
+from app.models import Mechanic, service_ticket_mechanics
 from app.mechanics.schemas import mechanic_schema, mechanics_schema
 from marshmallow import ValidationError
 
@@ -20,8 +21,9 @@ def create_mechanic():
     return mechanic_schema.jsonify(data), 201
 
 
-# ── GET /mechanics/ ── Get all mechanics
+# ── GET /mechanics/ ── Get all mechanics (cached for 60 seconds)
 @mechanics_bp.route("/", methods=["GET"])
+@cache.cached(timeout=60)
 def get_mechanics():
     all_mechanics = Mechanic.query.all()
     return mechanics_schema.jsonify(all_mechanics), 200
@@ -62,3 +64,26 @@ def delete_mechanic(id):
     db.session.delete(mechanic)
     db.session.commit()
     return jsonify({"message": f"Mechanic {id} deleted successfully"}), 200
+
+
+# ── GET /mechanics/most-tickets ── Mechanics ordered by number of service tickets worked
+@mechanics_bp.route("/most-tickets", methods=["GET"])
+def most_tickets():
+    results = (
+        db.session.query(
+            Mechanic,
+            func.count(service_ticket_mechanics.c.service_ticket_id).label("ticket_count"),
+        )
+        .outerjoin(service_ticket_mechanics, Mechanic.id == service_ticket_mechanics.c.mechanic_id)
+        .group_by(Mechanic.id)
+        .order_by(func.count(service_ticket_mechanics.c.service_ticket_id).desc())
+        .all()
+    )
+
+    data = []
+    for mechanic, count in results:
+        mechanic_data = mechanic_schema.dump(mechanic)
+        mechanic_data["ticket_count"] = count
+        data.append(mechanic_data)
+
+    return jsonify(data), 200
