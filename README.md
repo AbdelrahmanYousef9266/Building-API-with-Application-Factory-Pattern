@@ -104,7 +104,45 @@ Tables will be created automatically on first run. The server starts at `http://
 }
 ```
 
+## Database Relationships (ERD)
+
+### Customer → Service Ticket
+- One Customer can have many Service Tickets.
+- Each Service Ticket belongs to one Customer.
+
+### Service Ticket ↔ Mechanic
+- A Service Ticket can have many Mechanics.
+- A Mechanic can work on many Service Tickets.
+- This relationship is implemented using the `service_ticket_mechanics` association table.
+
+### Entity Overview
+
+Customer
+- id
+- name
+- email
+- phone
+- address
+
+Mechanic
+- id
+- name
+- email
+- phone
+- address
+- salary
+
+ServiceTicket
+- id
+- customer_id
+- vin
+- service_description
+- status
+- created_at
 ---
 
 ## Author
+
 **Abdelrahman Yousef**
+
+GitHub: https://github.com/AbdelrahmanYousef9266
