@@ -6,3 +6,5 @@ mysql-connector-python
 flask-limiter
 flask-caching
 python-jose
+flask-swagger
+flask-swagger-ui

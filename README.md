@@ -1,7 +1,7 @@
 # Mechanic Shop API
 
 ## Description
-A RESTful API for managing a mechanic shop built with Flask using the Application Factory Pattern. Supports managing customers, mechanics, service tickets, and inventory parts with many-to-many relationships, JWT authentication, rate limiting, caching, and pagination.
+A RESTful API for managing a mechanic shop built with Flask using the Application Factory Pattern. Supports managing customers, mechanics, service tickets, and inventory parts with many-to-many relationships, JWT authentication, rate limiting, caching, pagination, Swagger documentation, and unit testing.
 
 ## Technologies Used
 - **Python** + **Flask** — web framework
@@ -12,6 +12,8 @@ A RESTful API for managing a mechanic shop built with Flask using the Applicatio
 - **Flask-Limiter** — rate limiting
 - **Flask-Caching** — response caching
 - **python-jose** — JWT token encoding and decoding
+- **flask-swagger** — Swagger spec support
+- **flask-swagger-ui** — Swagger UI interface
 
 ## Setup Instructions
 
@@ -41,6 +43,75 @@ Open `app/__init__.py` and update the `SQLALCHEMY_DATABASE_URI` with your MySQL 
 python app.py
 ```
 Tables are created automatically on first run. The server starts at `http://127.0.0.1:5000`.
+
+---
+
+## Documentation
+
+### Swagger UI
+Interactive API documentation is available at:
+
+```
+http://127.0.0.1:5000/api/docs
+```
+
+The raw OpenAPI JSON spec is available at:
+
+```
+http://127.0.0.1:5000/api/swagger.json
+```
+
+### How to Use Swagger UI
+1. Start the app with `python app.py`
+2. Open your browser and go to `http://127.0.0.1:5000/api/docs`
+3. Expand any endpoint to see its description, parameters, and example request/response
+4. For token-protected routes, first use `POST /customers/login` to get a JWT token, then click **Authorize** (lock icon) and enter `Bearer <your_token>`
+5. Click **Try it out** on any endpoint to send live requests
+
+### Swagger Setup Notes
+- The spec is defined in `app/swagger.py` as a Python dictionary
+- Two blueprints are registered in `app/__init__.py`: one serving the JSON spec and one serving the UI
+- The spec follows **OpenAPI 2.0 (Swagger 2.0)** format
+
+---
+
+## Testing
+
+### How to Run Tests
+From the project root directory, run:
+
+```bash
+python -m unittest discover tests
+```
+
+To run a specific test file:
+```bash
+python -m unittest tests.test_customers
+python -m unittest tests.test_mechanics
+python -m unittest tests.test_service_tickets
+python -m unittest tests.test_inventory
+```
+
+To run a specific test case:
+```bash
+python -m unittest tests.test_customers.TestCustomers.test_create_customer_success
+```
+
+### Test Configuration
+- Tests use **SQLite in-memory** database — the production MySQL database is never touched
+- Rate limiting is **disabled** during tests
+- Each test creates a fresh database and tears it down after, so tests are fully isolated
+- The shared test configuration lives in `tests/base.py`
+
+### Test Coverage
+Each test file covers both **positive** (success) and **negative** (error) cases:
+
+| File | Routes Tested |
+|------|--------------|
+| `tests/test_customers.py` | POST, GET, PUT, DELETE `/customers/`, login, my-tickets |
+| `tests/test_mechanics.py` | POST, GET, PUT, DELETE `/mechanics/`, most-tickets |
+| `tests/test_service_tickets.py` | POST, GET `/service-tickets/`, assign, remove, edit, add-part |
+| `tests/test_inventory.py` | POST, GET, PUT, DELETE `/inventory/` |
 
 ---
 
