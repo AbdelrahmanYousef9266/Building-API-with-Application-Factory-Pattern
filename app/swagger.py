@@ -7,6 +7,12 @@ SWAGGER_URL = "/api/docs"
 # URL where the raw JSON spec is served
 API_URL = "/api/swagger.json"
 
+# ── Swagger host configuration ─────────────────────────────────────────────────
+# Local development:  "127.0.0.1:5000"
+# Render production:  "my-api-name.onrender.com"  ← replace with your service name
+SWAGGER_HOST = "my-api-name.onrender.com"
+SWAGGER_SCHEMES = ["https"]
+
 # ── Full OpenAPI 2.0 (Swagger) Specification ──────────────────────────────────
 SWAGGER_SPEC = {
     "swagger": "2.0",
@@ -23,9 +29,9 @@ SWAGGER_SPEC = {
             "url": "https://github.com/AbdelrahmanYousef9266",
         },
     },
-    "host": "127.0.0.1:5000",
+    "host": SWAGGER_HOST,
     "basePath": "/",
-    "schemes": ["http"],
+    "schemes": SWAGGER_SCHEMES,
     "consumes": ["application/json"],
     "produces": ["application/json"],
     # ── Security ──

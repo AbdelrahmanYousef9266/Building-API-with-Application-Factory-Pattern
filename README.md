@@ -296,6 +296,89 @@ Test in this order to avoid dependency errors:
 
 ---
 
+---
+
+## Environment Variables
+
+The application uses environment variables for sensitive configuration in production. Copy `.env.example` to `.env` and fill in your values:
+
+```bash
+cp .env.example .env
+```
+
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URI` | Full PostgreSQL connection string (provided by Render) |
+| `SECRET_KEY` | Secret key used to sign JWT tokens |
+
+`.env` is listed in `.gitignore` and must never be committed to source control.
+
+---
+
+## Render Deployment
+
+### Live URL
+```
+https://my-api-name.onrender.com
+```
+Replace `my-api-name` with your actual Render service name after deployment.
+
+### Steps to Deploy on Render
+
+1. Push this repository to GitHub.
+2. Go to [https://render.com](https://render.com) and sign in.
+3. Click **New → Web Service** and connect your GitHub repository.
+4. Configure the service:
+   - **Name:** `mechanic-shop-api` (or your preferred name)
+   - **Environment:** Python
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `gunicorn flask_app:app`
+5. Under **Environment Variables**, add:
+   - `DATABASE_URI` — your PostgreSQL connection string
+   - `SECRET_KEY` — a strong random secret
+6. Under **Advanced**, add a **PostgreSQL** database if you don't already have one (Render will provide the `DATABASE_URI` automatically when linked).
+7. Click **Create Web Service**. Render will build and deploy automatically.
+
+### Swagger UI on Render
+After deploying, open:
+```
+https://my-api-name.onrender.com/api/docs
+```
+Update `SWAGGER_HOST` in [app/swagger.py](app/swagger.py) to match your actual Render service name.
+
+---
+
+## CI/CD Pipeline (GitHub Actions)
+
+The workflow file is at [.github/workflows/main.yaml](.github/workflows/main.yaml).
+
+### Pipeline Stages
+
+| Job | Trigger | What it does |
+|-----|---------|--------------|
+| `build` | Push to `main` | Checks out code, sets up Python 3.11, installs dependencies |
+| `test` | After `build` | Runs `python -m unittest discover tests` against an SQLite in-memory DB |
+| `deploy` | After `test` passes | Calls the Render Deploy API to trigger a new deployment |
+
+### GitHub Secrets Required
+
+Go to your GitHub repository → **Settings → Secrets and variables → Actions → New repository secret** and add:
+
+| Secret | Where to find it |
+|--------|-----------------|
+| `RENDER_API_KEY` | Render dashboard → Account → API Keys |
+| `SERVICE_ID` | Render dashboard → your service → Settings → Service ID (starts with `srv-`) |
+
+### How to Verify CI/CD is Working
+
+1. Push any commit to the `main` branch.
+2. Go to your GitHub repository → **Actions** tab.
+3. You should see a workflow run with three jobs: `build → test → deploy`.
+4. If all three pass (green), a new deployment is triggered on Render automatically.
+5. Check the **Render dashboard → your service → Events** tab to confirm the deploy was received.
+
+---
+
 ## Author
 
 **Abdelrahman Yousef**
