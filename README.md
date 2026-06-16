@@ -380,7 +380,7 @@ Go to your GitHub repository → **Settings → Secrets and variables → Action
 2. Go to your GitHub repository → **Actions** tab.
 3. You should see a workflow run with three jobs: `build → test → deploy`.
 4. If all three pass (green), a new deployment is triggered on Render automatically.
-5. Check the **Render dashboard → your service → Events** tab to confirm the deploy was received.
+5. Check the **Render dashboard → your service → Events** tab to confirm the deploy was received..
 
 ---
 
