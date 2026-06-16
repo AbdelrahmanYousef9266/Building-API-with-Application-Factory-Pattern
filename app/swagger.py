@@ -9,8 +9,8 @@ API_URL = "/api/swagger.json"
 
 # ── Swagger host configuration ─────────────────────────────────────────────────
 # Local development:  "127.0.0.1:5000"
-# Render production:  "my-api-name.onrender.com"  ← replace with your service name
-SWAGGER_HOST = "my-api-name.onrender.com"
+# Render production:  "mechanic-shop-api-deqw.onrender.com"
+SWAGGER_HOST = "mechanic-shop-api-deqw.onrender.com"
 SWAGGER_SCHEMES = ["https"]
 
 # ── Full OpenAPI 2.0 (Swagger) Specification ──────────────────────────────────

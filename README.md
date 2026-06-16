@@ -319,9 +319,24 @@ cp .env.example .env
 
 ### Live URL
 ```
-https://my-api-name.onrender.com
+https://mechanic-shop-api-deqw.onrender.com
 ```
-Replace `my-api-name` with your actual Render service name after deployment.
+
+### Swagger UI
+```
+https://mechanic-shop-api-deqw.onrender.com/api/docs
+```
+
+### Swagger JSON
+```
+https://mechanic-shop-api-deqw.onrender.com/api/swagger.json
+```
+
+### Environment Variables Required
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URI` | PostgreSQL connection string (provided by Render when a database is linked) |
+| `SECRET_KEY` | Secret key used to sign JWT tokens |
 
 ### Steps to Deploy on Render
 
@@ -329,22 +344,12 @@ Replace `my-api-name` with your actual Render service name after deployment.
 2. Go to [https://render.com](https://render.com) and sign in.
 3. Click **New → Web Service** and connect your GitHub repository.
 4. Configure the service:
-   - **Name:** `mechanic-shop-api` (or your preferred name)
+   - **Name:** `mechanic-shop-api-deqw`
    - **Environment:** Python
    - **Build Command:** `pip install -r requirements.txt`
    - **Start Command:** `gunicorn flask_app:app`
-5. Under **Environment Variables**, add:
-   - `DATABASE_URI` — your PostgreSQL connection string
-   - `SECRET_KEY` — a strong random secret
-6. Under **Advanced**, add a **PostgreSQL** database if you don't already have one (Render will provide the `DATABASE_URI` automatically when linked).
-7. Click **Create Web Service**. Render will build and deploy automatically.
-
-### Swagger UI on Render
-After deploying, open:
-```
-https://my-api-name.onrender.com/api/docs
-```
-Update `SWAGGER_HOST` in [app/swagger.py](app/swagger.py) to match your actual Render service name.
+5. Under **Environment Variables**, add `DATABASE_URI` and `SECRET_KEY`.
+6. Click **Create Web Service**. Render will build and deploy automatically.
 
 ---
 
