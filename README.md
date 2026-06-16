@@ -14,6 +14,81 @@ A RESTful API for managing a mechanic shop built with Flask using the Applicatio
 - **python-jose** — JWT token encoding and decoding
 - **flask-swagger** — Swagger spec support
 - **flask-swagger-ui** — Swagger UI interface
+- **gunicorn** — Production WSGI server
+- **psycopg2-binary** — PostgreSQL driver
+- **GitHub Actions** — CI/CD pipeline
+- **Render** — Cloud deployment platform
+
+---
+
+## Live Deployment
+
+The API is deployed on Render and publicly accessible.
+
+### API Base URL
+```
+https://mechanic-shop-api-deqw.onrender.com
+```
+
+### Swagger Documentation
+```
+https://mechanic-shop-api-deqw.onrender.com/api/docs
+```
+
+### Swagger JSON
+```
+https://mechanic-shop-api-deqw.onrender.com/api/swagger.json
+```
+
+---
+
+## Deployment
+
+The API is deployed on [Render](https://render.com) using Gunicorn as the production WSGI server. PostgreSQL is hosted on Render and linked automatically via the `DATABASE_URI` environment variable. All sensitive configuration is loaded from environment variables — no secrets are stored in the repository.
+
+### Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URI` | PostgreSQL database connection string |
+| `SECRET_KEY` | JWT and Flask secret key |
+
+Copy `.env.example` to `.env` and fill in your values for local development. The `.env` file is listed in `.gitignore` and must never be committed.
+
+---
+
+## CI/CD Pipeline
+
+This project uses GitHub Actions for Continuous Integration and Continuous Deployment.
+
+**Pipeline workflow (triggered on every push to `main`):**
+
+1. Install all dependencies from `requirements.txt`.
+2. Run the full automated test suite (`python -m unittest discover tests`).
+3. Deploy automatically to Render if all tests pass.
+
+Deployment is blocked if any test fails — the `deploy` job depends on `needs: test`.
+
+The workflow file is at [.github/workflows/main.yaml](.github/workflows/main.yaml). Two GitHub Secrets are required: `RENDER_API_KEY` and `SERVICE_ID`.
+
+---
+
+## Production Features
+
+| Feature | Details |
+|---------|---------|
+| JWT Authentication | Token-based auth on protected routes |
+| Swagger Documentation | Interactive UI at `/api/docs` |
+| Inventory Management | Full CRUD for parts |
+| Pagination | `?page` and `per_page` on list endpoints |
+| Rate Limiting | 5 req/min on customer list; 200/day global |
+| Caching | 60-second in-memory cache on mechanic list |
+| Automated Testing | 69 tests across all route modules |
+| PostgreSQL Database | Hosted on Render in production |
+| Render Deployment | Live at `mechanic-shop-api-deqw.onrender.com` |
+| GitHub Actions CI/CD | Auto-deploy on push to `main` after tests pass |
+
+---
 
 ## Setup Instructions
 
@@ -112,6 +187,16 @@ Each test file covers both **positive** (success) and **negative** (error) cases
 | `tests/test_mechanics.py` | POST, GET, PUT, DELETE `/mechanics/`, most-tickets |
 | `tests/test_service_tickets.py` | POST, GET `/service-tickets/`, assign, remove, edit, add-part |
 | `tests/test_inventory.py` | POST, GET, PUT, DELETE `/inventory/` |
+
+**Current test coverage:**
+- Customer routes
+- Mechanic routes
+- Service Ticket routes
+- Inventory routes
+- Authentication routes
+- Positive and negative test cases for every module
+
+**Total automated tests: 69**
 
 ---
 
